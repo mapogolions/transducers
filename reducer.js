@@ -51,8 +51,21 @@ class Reduced {
         this._value = value;
     }
 
-    get value() {
+    unbox() {
         return this._value;
+    }
+}
+
+class SingleResult extends Reducer {
+    step(acc, item) {
+        return new Reduced(item);
+    }
+
+    complete(acc) {
+        if (acc instanceof SingleResult) {
+            return acc.unbox();
+        }
+        return acc;
     }
 }
 
@@ -61,5 +74,6 @@ module.exports = {
     ArrayOf,
     StringOf,
     SetOf,
-    Reduced
+    Reduced,
+    SingleResult,
 };
