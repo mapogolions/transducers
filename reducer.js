@@ -21,7 +21,7 @@ class ArrayOf extends Reducer {
     }
 }
 
-class StringOf extends Reducer {
+class Join extends Reducer {
     constructor(sep) {
         this._sep = sep;
     }
@@ -94,7 +94,7 @@ class FilterReducer extends Reducer {
 module.exports = {
     Reducer,
     ArrayOf,
-    StringOf,
+    Join,
     SetOf,
     Reduced,
     SingleResult,
