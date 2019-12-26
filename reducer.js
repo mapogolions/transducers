@@ -80,6 +80,17 @@ class MapReducer extends Reducer {
     }
 }
 
+class FilterReducer extends Reducer {
+    constructor(reducer, predicate) {
+        this._reducer = reducer;
+        this._predicate = predicate;
+    }
+
+    step(acc, item) {
+        return this._predicate(item) ? this._reducer(acc, item) : acc;
+    }
+}
+
 module.exports = {
     Reducer,
     ArrayOf,
@@ -87,4 +98,6 @@ module.exports = {
     SetOf,
     Reduced,
     SingleResult,
+    MapReducer,
+    FilterReducer,
 };
