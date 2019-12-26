@@ -69,6 +69,17 @@ class SingleResult extends Reducer {
     }
 }
 
+class MapReducer extends Reducer {
+    constructor(reducer, fn) {
+        this._reducer = reducer;
+        this._fn = fn;
+    }
+
+    step(acc, item) {
+        return this._reducer(acc, this._fn(item));
+    }
+}
+
 module.exports = {
     Reducer,
     ArrayOf,
