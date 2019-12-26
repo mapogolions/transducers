@@ -2,7 +2,9 @@
 
 class Reducer {
     init() {}
+
     step(acc, item) {}
+
     complete(acc) {
         return acc;
     }
@@ -44,9 +46,20 @@ class SetOf extends Reducer {
     }
 }
 
+class Reduced {
+    constructor(value) {
+        this._value = value;
+    }
+
+    get value() {
+        return this._value;
+    }
+}
+
 module.exports = {
     Reducer,
     ArrayOf,
     StringOf,
     SetOf,
+    Reduced
 };
