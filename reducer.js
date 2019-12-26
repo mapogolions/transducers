@@ -46,6 +46,19 @@ class SetOf extends Reducer {
     }
 }
 
+class MapOf extends Reducer {
+    init () {
+        return new Map();
+    }
+
+    step(acc, item) {
+        // or maybe const { key, value } = item
+        const [key, value] = item;
+        acc.set(key, value);
+        return acc;
+    }
+}
+
 class Reduced {
     constructor(value) {
         this._value = value;
@@ -100,4 +113,5 @@ module.exports = {
     SingleResult,
     MapReducer,
     FilterReducer,
+    MapOf,
 };
