@@ -22,9 +22,10 @@ function unreduced(it) {
 }
 
 function transduce(transformer, step, iterable, init = DEFAULT_INIT) {
-  // const transformation = transformer(step);
+
 }
 
+// transformers
 const map = f => ({ init, step, done }) => {
   return { init,
            done,
@@ -70,6 +71,8 @@ function stringOf(sep = '') {
 
 
 module.exports = {
+  map,
+  filter,
   arrayOf,
   setOf,
   mapOf,

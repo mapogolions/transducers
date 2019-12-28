@@ -1,9 +1,53 @@
 'use strict';
 
 const test = require('ava');
-const { arrayOf, setOf, mapOf, assoc, stringOf } = require('../reducer.js');
+const { map,
+        filter,
+        arrayOf,
+        setOf,
+        mapOf,
+        assoc,
+        stringOf } = require('../reducer.js');
 
 
+test('map transfomer', t => {
+  const testCases = [
+    {
+      item: 1,
+      fn: it => it + 1,
+      reducer: arrayOf,
+      expected: [2]
+    },
+    {
+      item: 'a',
+      fn: it => it.toUpperCase(),
+      reducer: setOf,
+      expected: new Set(['A'])
+    },
+    {
+      item: 1,
+      fn: it => [it, it > 0],
+      reducer: mapOf,
+      expected: new Map([[1, true]])
+    },
+    {
+      item: true,
+      fn: it => [it, !it],
+      reducer: assoc,
+      expected: { 'true': false }
+    }
+  ];
+
+  testCases.forEach(({ item, fn, reducer, expected}) => {
+    const xform = map(fn)(reducer());
+    t.deepEqual(xform.step(xform.init(), item), expected);
+  });
+
+  const xform = map(it => it + 1)(arrayOf());
+  t.deepEqual(xform.step([], 1), [2]);
+});
+
+// test basic reducers
 test('stringOf reducer', t => {
   const reducer = stringOf('-');
   t.is(reducer.init(), '');
