@@ -17,6 +17,10 @@ function identity(x) {
   return x;
 }
 
+function ensureReduced(it) {
+  return it instanceof Reduced ? it : new Reduced(it);
+}
+
 function unreduced(it) {
   return it instanceof Reduced ? it.value() : it;
 }
@@ -42,7 +46,15 @@ const filter = predicate => ({ init, step, done }) => {
   };
 };
 
-// reducers collection
+const take = n => ({ init, step, done }) => {
+  return {
+    init,
+    done,
+    step: (acc, x) => --n < 0 ? ensureReduced(acc) : step(acc, x)
+  };
+};
+
+// reducers
 function arrayOf() {
   return {
     init: () => [],
@@ -87,6 +99,7 @@ function stringOf(sep = '') {
 module.exports = {
   map,
   filter,
+  take,
   arrayOf,
   setOf,
   mapOf,
