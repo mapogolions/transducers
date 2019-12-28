@@ -3,11 +3,31 @@
 const test = require('ava');
 const { map,
         filter,
+        take,
         arrayOf,
         setOf,
         mapOf,
         assoc,
-        stringOf } = require('../reducer.js');
+        stringOf,
+        unreduced } = require('../reducer.js');
+
+test('take-n tranformer should return Reduced instance when n equal to zero', t => {
+  const xform = take(0)(arrayOf());
+  const actual = xform.step([1, 2], 3);
+  t.deepEqual(unreduced(actual), [1, 2]);
+});
+
+test('take-n tranformer should return Reduced instance when n is less than zero', t => {
+  const xform = take(-1)(arrayOf());
+  const actual = xform.step([1, 2], 3);
+  t.deepEqual(unreduced(actual), [1, 2]);
+});
+
+test('take-n tranformer should push item when n is greater than zero', t => {
+  const xform = take(2)(arrayOf());
+  const actual = xform.step([1, 2], 3);
+  t.deepEqual(actual, [1, 2, 3]);
+});
 
 
 test('filter transfomer', t => {
@@ -43,6 +63,7 @@ test('filter transfomer', t => {
     t.deepEqual(xform.step(xform.init(), item), expected);
   });
 });
+
 test('map transfomer', t => {
   const testCases = [
     {
