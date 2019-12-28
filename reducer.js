@@ -1,27 +1,26 @@
 'use strict';
 
 
-class Reduced {
-  constructor(value) {
-    this._value = value;
-  }
+const REDUCED = Symbol('reduced value');
 
-  value() {
-    return this._value;
-  }
+function reduced(value) {
+  return Object.freeze({ value, [REDUCED]: true });
 }
 
-// glue
 function identity(x) {
   return x;
 }
 
+function isReduced(obj) {
+  return obj && obj[REDUCED];
+}
+
 function ensureReduced(obj) {
-  return obj instanceof Reduced ? obj : new Reduced(obj);
+  return isReduced(obj) ? obj[REDUCED] : obj;
 }
 
 function unreduced(obj) {
-  return obj instanceof Reduced ? obj.value() : obj;
+  return obj && obj[REDUCED] ? obj.value() : obj;
 }
 
 function transduce(transformer, reducer, iterable) {
@@ -32,13 +31,12 @@ function transduce(transformer, reducer, iterable) {
 function reduce(step, iterable, acc) {
   for (const item of iterable) {
     acc = step(acc, item);
-    if (acc instanceof Reduced)
+    if (isReduced(acc))
       return acc.value();
   }
   return acc;
 }
 
-// transformers
 const map = f => ({ init, step, done }) => {
   return {
     init,
@@ -114,6 +112,9 @@ module.exports = {
   mapOf,
   assoc,
   stringOf,
-  unreduced,
   transduce,
+  identity,
+  isReduced,
+  unreduced,
+  ensureReduced,
 };
