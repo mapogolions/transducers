@@ -10,6 +10,39 @@ const { map,
         stringOf } = require('../reducer.js');
 
 
+test('filter transfomer', t => {
+  const testCases = [
+    {
+      item: 1,
+      predicate: it => it > 0,
+      reducer: arrayOf,
+      expected: [1]
+    },
+    {
+      item: true,
+      predicate: it => !it,
+      reducer: setOf,
+      expected: new Set()
+    },
+    {
+      item: [true, 1],
+      predicate: ([_, value]) => value > 0,
+      reducer: mapOf,
+      expected: new Map([[true, 1]])
+    },
+    {
+      item: [true, false],
+      predicate: ([key, _]) => key,
+      reducer: assoc,
+      expected: { 'true': false }
+    }
+  ];
+
+  testCases.forEach(({ item, predicate, reducer, expected}) => {
+    const xform = filter(predicate)(reducer());
+    t.deepEqual(xform.step(xform.init(), item), expected);
+  });
+});
 test('map transfomer', t => {
   const testCases = [
     {
