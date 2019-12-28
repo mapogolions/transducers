@@ -42,9 +42,6 @@ test('map transfomer', t => {
     const xform = map(fn)(reducer());
     t.deepEqual(xform.step(xform.init(), item), expected);
   });
-
-  const xform = map(it => it + 1)(arrayOf());
-  t.deepEqual(xform.step([], 1), [2]);
 });
 
 // test basic reducers
