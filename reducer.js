@@ -51,19 +51,19 @@ function setOf() {
 }
 
 function mapOf() {
-  return { init: new Map(),
+  return { init: () => new Map(),
            step: (acc, [key, value]) => { acc.set(key, value); return acc; },
            done: identity };
 }
 
 function assoc() {
-  return { init: {},
+  return { init: () => ({}),
            step: (acc, [key, value]) => { acc[key] = value; return acc; },
            done: identity };
 }
 
-function join(sep) {
-  return { init: () => [],
+function stringOf(sep = '') {
+  return { init: () => '',
            step: (acc, x) => `${acc}${sep}${x}`,
            done: identity };
 }
@@ -71,4 +71,8 @@ function join(sep) {
 
 module.exports = {
   arrayOf,
+  setOf,
+  mapOf,
+  assoc,
+  stringOf,
 };
