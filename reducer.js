@@ -31,7 +31,11 @@ const map = f => ({ init, step, done }) => {
            step: (acc, x) => step(acc, f(x)) };
 };
 
-const filter = predicate => reducer => (acc, item) => predicate(x) ? reducer(acc, x) : acc;
+const filter = predicate => ({ init, step, done }) => {
+  return { init,
+           done,
+           step: (acc, x) => predicate(x) ? step(acc, x) : acc };
+};
 
 // reducers collection
 function arrayOf() {
