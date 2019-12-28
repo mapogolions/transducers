@@ -22,51 +22,65 @@ function unreduced(it) {
 }
 
 function transduce(transformer, step, iterable, init = DEFAULT_INIT) {
-
+  // Todo
 }
 
 // transformers
 const map = f => ({ init, step, done }) => {
-  return { init,
-           done,
-           step: (acc, x) => step(acc, f(x)) };
+  return {
+    init,
+    done,
+    step: (acc, x) => step(acc, f(x))
+  };
 };
 
 const filter = predicate => ({ init, step, done }) => {
-  return { init,
-           done,
-           step: (acc, x) => predicate(x) ? step(acc, x) : acc };
+  return {
+    init,
+    done,
+    step: (acc, x) => predicate(x) ? step(acc, x) : acc
+  };
 };
 
 // reducers collection
 function arrayOf() {
-  return { init: () => [],
-           step: (acc, x) => { acc.push(x); return acc; },
-           done: identity };
+  return {
+    init: () => [],
+    step: (acc, x) => { acc.push(x); return acc; },
+    done: identity
+  };
 }
 
 function setOf() {
-  return { init: () => new Set(),
-           step: (acc, x) => { acc.add(x); return acc; },
-           done: identity };
+  return {
+    init: () => new Set(),
+    step: (acc, x) => { acc.add(x); return acc; },
+    done: identity
+  };
 }
 
 function mapOf() {
-  return { init: () => new Map(),
-           step: (acc, [key, value]) => { acc.set(key, value); return acc; },
-           done: identity };
+  return {
+    init: () => new Map(),
+    step: (acc, [key, value]) => { acc.set(key, value); return acc; },
+    done: identity
+  };
 }
 
 function assoc() {
-  return { init: () => ({}),
-           step: (acc, [key, value]) => { acc[key] = value; return acc; },
-           done: identity };
+  return {
+    init: () => ({}),
+    step: (acc, [key, value]) => { acc[key] = value; return acc; },
+    done: identity
+  };
 }
 
 function stringOf(sep = '') {
-  return { init: () => '',
-           step: (acc, x) => `${acc}${sep}${x}`,
-           done: identity };
+  return {
+    init: () => '',
+    step: (acc, x) => `${acc}${sep}${x}`,
+    done: identity
+  };
 }
 
 
