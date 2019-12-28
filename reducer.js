@@ -1,117 +1,65 @@
 'use strict';
 
-class Reducer {
-    init() {}
-
-    step(acc, item) {}
-
-    complete(acc) {
-        return acc;
-    }
-}
-
-class ArrayOf extends Reducer {
-    init() {
-        return [];
-    }
-
-    step(acc, item) {
-        acc.push(item);
-        return acc;
-    }
-}
-
-class Join extends Reducer {
-    constructor(sep) {
-        this._sep = sep;
-    }
-
-    init() {
-        return '';
-    }
-
-    step(acc, item) {
-        return `${acc}${sep}${item}`;
-    }
-}
-
-class SetOf extends Reducer {
-    init() {
-        return new Set();
-    }
-
-    step(acc, item) {
-        acc.add(item);
-        return acc;
-    }
-}
-
-class MapOf extends Reducer {
-    init () {
-        return new Map();
-    }
-
-    step(acc, item) {
-        // or maybe const { key, value } = item
-        const [key, value] = item;
-        acc.set(key, value);
-        return acc;
-    }
-}
+const DEFAULT_INIT = Symbol('Default init');
 
 class Reduced {
-    constructor(value) {
-        this._value = value;
-    }
+  constructor(value) {
+    this._value = value;
+  }
 
-    unbox() {
-        return this._value;
-    }
+  value() {
+    return this._value;
+  }
 }
 
-class SingleResult extends Reducer {
-    step(acc, item) {
-        return new Reduced(item);
-    }
-
-    complete(acc) {
-        if (acc instanceof SingleResult) {
-            return acc.unbox();
-        }
-        return acc;
-    }
+// glue
+function identity(x) {
+  return x;
 }
 
-class MapReducer extends Reducer {
-    constructor(reducer, fn) {
-        this._reducer = reducer;
-        this._fn = fn;
-    }
-
-    step(acc, item) {
-        return this._reducer(acc, this._fn(item));
-    }
+function unreduced(it) {
+  return it instanceof Reduced ? it.value() : it;
 }
 
-class FilterReducer extends Reducer {
-    constructor(reducer, predicate) {
-        this._reducer = reducer;
-        this._predicate = predicate;
-    }
-
-    step(acc, item) {
-        return this._predicate(item) ? this._reducer(acc, item) : acc;
-    }
+function transduce(transformer, step, iterable, init = DEFAULT_INIT) {
+  // const transformation = transformer(step);
 }
 
-module.exports = {
-    Reducer,
-    ArrayOf,
-    Join,
-    SetOf,
-    Reduced,
-    SingleResult,
-    MapReducer,
-    FilterReducer,
-    MapOf,
+const map = f => ({ init, step, done }) => {
+  return { init,
+           done,
+           step: (acc, x) => step(acc, f(x)) };
 };
+
+const filter = predicate => reducer => (acc, item) => predicate(x) ? reducer(acc, x) : acc;
+
+// reducers collection
+function arrayOf() {
+  return { init: [],
+           step: (acc, x) => { acc.push(x); return acc; },
+           done: identity };
+}
+
+function setOf() {
+  return { init: new Set(),
+           step: (acc, x) => { acc.add(x); return acc; },
+           done: identity };
+}
+
+function mapOf() {
+  return { init: new Map(),
+           step: (acc, [key, value]) => { acc.set(key, value); return acc; },
+           done: identity };
+}
+
+function assoc() {
+  return { init: {},
+           step: (acc, [key, value]) => { acc[key] = value; return acc; },
+           done: identity };
+}
+
+function join(sep) {
+  return { init: [],
+           step: (acc, x) = `${acc}${sep}${x}`,
+           done: identity };
+}
