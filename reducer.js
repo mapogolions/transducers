@@ -1,6 +1,5 @@
 'use strict';
 
-const DEFAULT_INIT = Symbol('Default init');
 
 class Reduced {
   constructor(value) {
@@ -17,16 +16,26 @@ function identity(x) {
   return x;
 }
 
-function ensureReduced(it) {
-  return it instanceof Reduced ? it : new Reduced(it);
+function ensureReduced(obj) {
+  return obj instanceof Reduced ? obj : new Reduced(obj);
 }
 
-function unreduced(it) {
-  return it instanceof Reduced ? it.value() : it;
+function unreduced(obj) {
+  return obj instanceof Reduced ? obj.value() : obj;
 }
 
-function transduce(transformer, step, iterable, init = DEFAULT_INIT) {
-  // Todo
+function transduce(transformer, reducer, iterable) {
+  const xform = transformer(reducer);
+  return reduce(xform.step, iterable, xform.init());
+}
+
+function reduce(step, iterable, acc) {
+  for (const item of iterable) {
+    acc = step(acc, item);
+    if (acc instanceof Reduced)
+      return acc.value();
+  }
+  return acc;
 }
 
 // transformers
@@ -106,4 +115,5 @@ module.exports = {
   assoc,
   stringOf,
   unreduced,
+  transduce,
 };

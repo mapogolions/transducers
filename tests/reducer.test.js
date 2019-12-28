@@ -9,15 +9,31 @@ const { map,
         mapOf,
         assoc,
         stringOf,
-        unreduced } = require('../reducer.js');
+        unreduced,
+        transduce } = require('../reducer.js');
 
-test('take-n tranformer should return Reduced instance when n equal to zero', t => {
+test('should return plain js-object', t => {
+  const actual = transduce(map(it => it), assoc(), [[1, 2], [3, 4]]);
+  t.deepEqual(actual, { '1': 2, '3': 4 });
+});
+
+test('should return elements of array increased by one', t => {
+  const actual = transduce(map(it => it + 1), arrayOf(), [1, 2, 3]);
+  t.deepEqual(actual, [2, 3, 4]);
+});
+
+test('should glue elements of array', t => {
+  const actual = transduce(map(it => it), stringOf(), [1, 2, 3]);
+  t.is(actual, '123');
+});
+
+test('take-n tranformer should return Reduced when n equal to zero', t => {
   const xform = take(0)(arrayOf());
   const actual = xform.step([1, 2], 3);
   t.deepEqual(unreduced(actual), [1, 2]);
 });
 
-test('take-n tranformer should return Reduced instance when n is less than zero', t => {
+test('take-n tranformer should return Reduced when n is less than zero', t => {
   const xform = take(-1)(arrayOf());
   const actual = xform.step([1, 2], 3);
   t.deepEqual(unreduced(actual), [1, 2]);
