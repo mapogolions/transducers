@@ -1,18 +1,10 @@
 'use strict';
 
 const test = require('ava');
-const { map,
-        filter,
-        take,
-        arrayOf,
-        setOf,
-        mapOf,
-        assoc,
-        stringOf,
-        isReduced,
-        ensureReduced,
-        unreduced,
-        transduce } = require('../reducer.js');
+const { map, filter,  take } = require('../src/transducers.js');
+const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/reducers.js');
+const { unreduced, ensureReduced, isReduced, transduce } = require('../src/tools.js');
+
 
 test('should unreduce value', t => {
   t.is(unreduced(1), 1);
@@ -37,7 +29,6 @@ test('should check whether value is Reduced', t => {
   ];
 
   testCases.forEach(it => t.false(isReduced(it)));
-
 });
 
 test('should return plain js-object', t => {
@@ -140,40 +131,4 @@ test('map transfomer', t => {
     const xform = map(fn)(reducer());
     t.deepEqual(xform.step(xform.init(), item), expected);
   });
-});
-
-// test basic reducers
-test('stringOf reducer', t => {
-  const reducer = stringOf('-');
-  t.is(reducer.init(), '');
-  t.is(reducer.step('', '1'), '-1');
-  t.is(reducer.done(1), 1);
-});
-
-test('assoc reducer', t => {
-  const reducer = assoc();
-  t.deepEqual(reducer.init(), {});
-  t.deepEqual(reducer.step({}, [1, 1]), {'1': 1});
-  t.is(reducer.done(1), 1);
-});
-
-test('setOf reducer', t => {
-  const reducer = setOf();
-  t.deepEqual(reducer.init(), new Set());
-  t.deepEqual(reducer.step(new Set(), 1), new Set([1]));
-  t.is(reducer.done(1), 1);
-});
-
-test('mapOf reducer', t => {
-  const reducer = mapOf();
-  t.deepEqual(reducer.init(), new Map());
-  t.deepEqual(reducer.step(new Map(), ['one', 1]), new Map([['one', 1]]));
-  t.is(reducer.done(1), 1);
-});
-
-test('arrayOf reducer', t => {
-  const reducer = arrayOf();
-  t.deepEqual(reducer.init(), []);
-  t.deepEqual(reducer.step([], 1), [1]);
-  t.is(reducer.done(1), 1);
 });
