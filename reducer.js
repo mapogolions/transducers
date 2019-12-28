@@ -64,6 +64,11 @@ function assoc() {
 
 function join(sep) {
   return { init: [],
-           step: (acc, x) = `${acc}${sep}${x}`,
+           step: (acc, x) => `${acc}${sep}${x}`,
            done: identity };
 }
+
+
+module.exports = {
+  arrayOf,
+};
