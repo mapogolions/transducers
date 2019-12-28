@@ -3,20 +3,22 @@
 
 const REDUCED = Symbol('reduced value');
 
-function reduced(value) {
-  return Object.freeze({ value, [REDUCED]: true });
-}
-
 function identity(x) {
   return x;
 }
 
 function isReduced(obj) {
-  return obj && obj[REDUCED];
+  return obj && obj[REDUCED] ? true : false;
 }
 
 function ensureReduced(obj) {
-  return isReduced(obj) ? obj[REDUCED] : obj;
+  if (isReduced(obj)) {
+    return obj;
+  }
+  return {
+    value() { return obj; },
+    [REDUCED]: true
+  };
 }
 
 function unreduced(obj) {
