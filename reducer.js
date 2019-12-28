@@ -39,13 +39,13 @@ const filter = predicate => ({ init, step, done }) => {
 
 // reducers collection
 function arrayOf() {
-  return { init: [],
+  return { init: () => [],
            step: (acc, x) => { acc.push(x); return acc; },
            done: identity };
 }
 
 function setOf() {
-  return { init: new Set(),
+  return { init: () => new Set(),
            step: (acc, x) => { acc.add(x); return acc; },
            done: identity };
 }
@@ -63,7 +63,7 @@ function assoc() {
 }
 
 function join(sep) {
-  return { init: [],
+  return { init: () => [],
            step: (acc, x) => `${acc}${sep}${x}`,
            done: identity };
 }
