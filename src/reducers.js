@@ -56,4 +56,5 @@ module.exports = {
   mapOf,
   stringOf,
   assoc,
+  shapeFn,
 };
