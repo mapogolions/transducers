@@ -2,8 +2,8 @@
 
 const { shapeFn } = require('./reducers.js');
 
-const REDUCED = Symbol('reduced value');
 
+const REDUCED = Symbol('reduced value');
 
 function identity(x) {
   return x;
@@ -29,7 +29,7 @@ function unreduced(obj) {
 
 function transduce(xform, reducer, iterable) {
   const transformation = xform(reducer);
-  return reduce(transformation, iterable, xform());
+  return reduce(transformation, iterable, transformation());
 }
 
 function reduce(step, iterable, acc) {
@@ -57,7 +57,7 @@ function filter(pred) {
 
 function take(n) {
     return function (reducer) {
-        const step = (acc, x) => --n < 0 ? ensureReduced(acc) : step(acc, x);
+        const step = (acc, x) => --n < 0 ? ensureReduced(acc) : reducer(acc, x);
         return shapeFn(reducer(), step);
     };
 }
@@ -67,4 +67,9 @@ module.exports = {
   map,
   filter,
   take,
+  transduce,
+  reduce,
+  unreduced,
+  isReduced,
+  ensureReduced,
 };
