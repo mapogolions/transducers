@@ -26,9 +26,9 @@ function unreduced(obj) {
   return obj && obj[REDUCED] ? obj.value() : obj;
 }
 
-function transduce(transformer, reducer, iterable) {
-  const xform = transformer(reducer);
-  return reduce(xform.step, iterable, xform.init());
+function transduce(xform, reducer, iterable) {
+  const transformation = xform(reducer);
+  return reduce(transformation.step, iterable, transformation.init());
 }
 
 function reduce(step, iterable, acc) {
