@@ -1,15 +1,15 @@
-'use strict';
+'use strict'
 
-const test = require('ava');
-const { unreduced, ensureReduced, isReduced } = require('../src/tools.js');
+const test = require('ava')
+const { unreduced, ensureReduced, isReduced } = require('../src/tools.js')
 
 test('should unreduce value', t => {
-  t.is(unreduced(1), 1);
-  t.deepEqual(unreduced([]), []);
-  t.deepEqual(unreduced(ensureReduced({})), {});
-  t.is(unreduced(false), false);
-  t.is(unreduced(ensureReduced('')), '');
-});
+  t.is(unreduced(1), 1)
+  t.deepEqual(unreduced([]), [])
+  t.deepEqual(unreduced(ensureReduced({})), {})
+  t.is(unreduced(false), false)
+  t.is(unreduced(ensureReduced('')), '')
+})
 
 test('should check whether value is Reduced', t => {
   const testCases = [
@@ -23,7 +23,7 @@ test('should check whether value is Reduced', t => {
     { input: x => x, expected: false },
     { input: [], expected: false },
     { input: {}, expected: false }
-  ];
+  ]
 
-  testCases.forEach(it => t.false(isReduced(it)));
-});
+  testCases.forEach(it => t.false(isReduced(it)))
+})

@@ -1,36 +1,34 @@
-'use strict';
+'use strict'
 
+const arity = args => args.length
+const zeroArity = args => arity(args) === 0
+const oneArity = args => arity(args) === 1
 
-const arity = args => args.length;
-const zeroArity = args => arity(args) === 0;
-const oneArity = args => arity(args) === 1;
+const REDUCED = Symbol('reduced value')
 
-const REDUCED = Symbol('reduced value');
-
-function isReduced(obj) {
-  return obj && obj[REDUCED] ? true : false;
+function isReduced (obj) {
+  return !!(obj && obj[REDUCED])
 }
 
-function ensureReduced(obj) {
+function ensureReduced (obj) {
   if (isReduced(obj)) {
-    return obj;
+    return obj
   }
   return {
-    value() { return obj; },
+    value () { return obj },
     [REDUCED]: true
-  };
+  }
 }
 
-function unreduced(obj) {
-  return obj && obj[REDUCED] ? obj.value() : obj;
+function unreduced (obj) {
+  return obj && obj[REDUCED] ? obj.value() : obj
 }
-
 
 module.exports = {
-    arity,
-    zeroArity,
-    oneArity,
-    isReduced,
-    ensureReduced,
-    unreduced,
-};
+  arity,
+  zeroArity,
+  oneArity,
+  isReduced,
+  ensureReduced,
+  unreduced
+}
