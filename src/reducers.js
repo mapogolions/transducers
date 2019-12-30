@@ -1,52 +1,55 @@
 'use strict';
 
+const { zeroArity, oneArity } = require('./tools.js');
 
-function zeroArity(args) {
-  return args && (args.length === 0);
-}
 
-function oneArity(args) {
-  return args.length === 1;
-}
-
-function shapeFn(initial, fn) {
+function arrayOf() {
   return function (...varargs) {
-    if (zeroArity(varargs)) return initial;
+    if (zeroArity(varargs)) return [];
     if (oneArity(varargs)) return varargs[0];
-    return fn(...varargs);
+    const [acc, x] = varargs;
+    acc.push(x);
+    return acc;
   };
 }
 
-function arrayOf() {
-  return shapeFn([], (acc, x) => {
-    acc.push(x);
-    return acc;
-  });
-}
-
 function setOf() {
-  return shapeFn(new Set(), (acc, x) => {
+  return function (...varargs) {
+    if (zeroArity(varargs)) return new Set();
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, x] = varargs;
     acc.add(x);
     return acc;
-  });
+  };
 }
 
 function mapOf() {
-  return shapeFn(new Map(), (acc, [key, value]) => {
+  return function (...varargs) {
+    if (zeroArity(varargs)) return new Map();
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, [key, value]] = varargs;
     acc.set(key, value);
     return acc;
-  });
+  };
 }
 
 function assoc() {
-  return shapeFn({}, (acc, [key, value]) => {
+  return function (...varargs) {
+    if (zeroArity(varargs)) return {};
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, [key, value]] = varargs;
     acc[key] = value;
     return acc;
-  });
+  };
 }
 
 function stringOf(sep = '') {
-  return shapeFn('', (acc, x) => `${acc}${sep}${x}`);
+  return function (...varargs) {
+    if (zeroArity(varargs)) return '';
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, x] = varargs;
+    return `${acc}${sep}${x}`;
+  };
 }
 
 
@@ -56,5 +59,4 @@ module.exports = {
   mapOf,
   stringOf,
   assoc,
-  shapeFn,
 };

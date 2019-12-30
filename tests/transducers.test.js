@@ -1,35 +1,11 @@
 'use strict';
 
 const test = require('ava');
-const { map, filter,  take,
-    unreduced, ensureReduced, isReduced, transduce } = require('../src/transducers.js');
+const { unreduced } = require('../src/tools.js');
+const { transduce } = require('../src/index.js');
+const { map, filter,  take } = require('../src/transducers.js');
 const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/reducers.js');
 
-
-test('should unreduce value', t => {
-  t.is(unreduced(1), 1);
-  t.deepEqual(unreduced([]), []);
-  t.deepEqual(unreduced(ensureReduced({})), {});
-  t.is(unreduced(false), false);
-  t.is(unreduced(ensureReduced('')), '');
-});
-
-test('should check whether value is Reduced', t => {
-  const testCases = [
-    { input: false, expected: false },
-    { input: 1, expected: false },
-    { input: ensureReduced(null), expected: true },
-    { input: ensureReduced(undefined), expected: true },
-    { input: ensureReduced(false), expected: true },
-    { input: undefined, expected: false },
-    { input: Symbol(1), expected: false },
-    { input: x => x, expected: false },
-    { input: [], expected: false },
-    { input: {}, expected: false }
-  ];
-
-  testCases.forEach(it => t.false(isReduced(it)));
-});
 
 test('should return plain js-object', t => {
   const actual = transduce(map(it => it), assoc(), [[1, 2], [3, 4]]);

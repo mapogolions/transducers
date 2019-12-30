@@ -1,65 +1,39 @@
 'use strict';
 
-const { shapeFn } = require('./reducers.js');
+const { zeroArity, oneArity, ensureReduced } = require('./tools.js');
 
 
-const REDUCED = Symbol('reduced value');
-
-function identity(x) {
-  return x;
-}
-
-function isReduced(obj) {
-  return obj && obj[REDUCED] ? true : false;
-}
-
-function ensureReduced(obj) {
-  if (isReduced(obj)) {
-    return obj;
-  }
-  return {
-    value() { return obj; },
-    [REDUCED]: true
+function map(fn) {
+  return function (reducer) {
+    return function (...varargs) {
+      if (zeroArity(varargs)) return reducer();
+      if (oneArity(varargs)) return reducer(varargs[0]);
+      const [acc, x] = varargs;
+      return reducer(acc, fn(x));
+    };
   };
 }
 
-function unreduced(obj) {
-  return obj && obj[REDUCED] ? obj.value() : obj;
-}
-
-function transduce(xform, reducer, iterable) {
-  const transformation = xform(reducer);
-  return reduce(transformation, iterable, transformation());
-}
-
-function reduce(step, iterable, acc) {
-  for (const item of iterable) {
-    acc = step(acc, item);
-    if (isReduced(acc))
-      return acc.value();
-  }
-  return acc;
-}
-
-function map(fn) {
-    return function (reducer) {
-        const step = (acc, x) => reducer(acc, fn(x));
-        return shapeFn(reducer(), step);
-    };
-}
-
 function filter(pred) {
-    return function (reducer) {
-        const step = (acc, x) => pred(x) ? reducer(acc, x) : acc;
-        return shapeFn(reducer(), step);
+  return function (reducer) {
+    return function (...varargs) {
+      if (zeroArity(varargs)) return reducer();
+      if (oneArity(varargs)) return reducer(varargs[0]);
+      const [acc, x] = varargs;
+      return pred(x) ? reducer(acc, x) : acc;
     };
+  };
 }
 
 function take(n) {
-    return function (reducer) {
-        const step = (acc, x) => --n < 0 ? ensureReduced(acc) : reducer(acc, x);
-        return shapeFn(reducer(), step);
+  return function (reducer) {
+    return function (...varargs) {
+      if (zeroArity(varargs)) return reducer();
+      if (oneArity(varargs)) return reducer(varargs[0]);
+      const [acc, x] = varargs;
+      return --n < 0 ? ensureReduced(acc) : reducer(acc, x);
     };
+  };
 }
 
 
@@ -67,9 +41,4 @@ module.exports = {
   map,
   filter,
   take,
-  transduce,
-  reduce,
-  unreduced,
-  isReduced,
-  ensureReduced,
 };
