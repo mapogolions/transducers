@@ -6,6 +6,48 @@ const { transduce } = require('../src/index.js')
 const { map, filter, take } = require('../src/transducers.js')
 const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/reducers.js')
 
+test('take N elements transducer', t => {
+  const testCases = [
+    {
+      message: 'Should take 2 elements from string',
+      xform: take(2),
+      reducer: stringOf('-'),
+      coll: 'fake',
+      expected: '-f-a',
+      assert: t.is
+    },
+    {
+      message: 'Should take 0 elements from non-empty arrray',
+      xform: take(0),
+      reducer: arrayOf(),
+      coll: [1, 2, 3],
+      expected: [],
+      assert: t.deepEqual
+    },
+    {
+      message: 'Should take 0 elements when N is a negative number',
+      xform: take(-1),
+      reducer: stringOf(),
+      coll: 'fake',
+      expected: '',
+      assert: t.is
+    },
+    {
+      message: 'Should take all elements from source when N is greater than length of source',
+      xform: take(10),
+      reducer: stringOf(),
+      coll: 'fake',
+      expected: 'fake',
+      assert: t.is
+    }
+  ]
+
+  testCases.forEach(({ xform, reducer, coll, expected, assert, message }) => {
+    const actual = transduce(xform, reducer, coll)
+    assert(actual, expected, message)
+  })
+})
+
 test('should return plain js-object', t => {
   const actual = transduce(map(it => it), assoc(), [[1, 2], [3, 4]])
   t.deepEqual(actual, { 1: 2, 3: 4 })
