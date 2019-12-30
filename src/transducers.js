@@ -1,26 +1,38 @@
 'use strict';
 
-const { ensureReduced } = require('./tools.js');
+const { zeroArity, oneArity, ensureReduced } = require('./tools.js');
 
 
 function map(fn) {
-  return function ({ init, step, done }) {
-    const stepFn = (acc, x) => step(acc, fn(x));
-    return { init, done, step: stepFn };
+  return function (reducer) {
+    return function (...varargs) {
+      if (zeroArity(varargs)) return reducer();
+      if (oneArity(varargs)) return reducer(varargs[0]);
+      const [acc, x] = varargs;
+      return reducer(acc, fn(x));
+    };
   };
 }
 
-function filter(predicate) {
-  return function ({ init, step, done }) {
-    const stepFn = (acc, x) => predicate(x) ? step(acc, x) : acc;
-    return { init, done, step: stepFn };
+function filter(pred) {
+  return function (reducer) {
+    return function (...varargs) {
+      if (zeroArity(varargs)) return reducer();
+      if (oneArity(varargs)) return reducer(varargs[0]);
+      const [acc, x] = varargs;
+      return pred(x) ? reducer(acc, x) : acc;
+    };
   };
 }
 
 function take(n) {
-  return function ({ init, step, done }) {
-    const stepFn = (acc, x) => --n < 0 ? ensureReduced(acc) : step(acc, x);
-    return { init, done, step: stepFn };
+  return function (reducer) {
+    return function (...varargs) {
+      if (zeroArity(varargs)) return reducer();
+      if (oneArity(varargs)) return reducer(varargs[0]);
+      const [acc, x] = varargs;
+      return --n < 0 ? ensureReduced(acc) : reducer(acc, x);
+    };
   };
 }
 

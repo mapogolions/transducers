@@ -1,12 +1,11 @@
 'use strict';
 
 
+const arity = args => args.length;
+const zeroArity = args => arity(args) === 0;
+const oneArity = args => arity(args) === 1;
+
 const REDUCED = Symbol('reduced value');
-
-
-function identity(x) {
-  return x;
-}
 
 function isReduced(obj) {
   return obj && obj[REDUCED] ? true : false;
@@ -26,25 +25,12 @@ function unreduced(obj) {
   return obj && obj[REDUCED] ? obj.value() : obj;
 }
 
-function transduce(transformer, reducer, iterable) {
-  const xform = transformer(reducer);
-  return reduce(xform.step, iterable, xform.init());
-}
-
-function reduce(step, iterable, acc) {
-  for (const item of iterable) {
-    acc = step(acc, item);
-    if (isReduced(acc))
-      return acc.value();
-  }
-  return acc;
-}
 
 module.exports = {
-  identity,
-  isReduced,
-  ensureReduced,
-  unreduced,
-  transduce,
-  reduce,
+    arity,
+    zeroArity,
+    oneArity,
+    isReduced,
+    ensureReduced,
+    unreduced,
 };

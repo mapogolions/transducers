@@ -1,45 +1,54 @@
 'use strict';
 
-const { identity } = require('./tools.js');
+const { zeroArity, oneArity } = require('./tools.js');
 
 
 function arrayOf() {
-  return {
-    init: () => [],
-    step: (acc, x) => { acc.push(x); return acc; },
-    done: identity
+  return function (...varargs) {
+    if (zeroArity(varargs)) return [];
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, x] = varargs;
+    acc.push(x);
+    return acc;
   };
 }
 
 function setOf() {
-  return {
-    init: () => new Set(),
-    step: (acc, x) => { acc.add(x); return acc; },
-    done: identity
+  return function (...varargs) {
+    if (zeroArity(varargs)) return new Set();
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, x] = varargs;
+    acc.add(x);
+    return acc;
   };
 }
 
 function mapOf() {
-  return {
-    init: () => new Map(),
-    step: (acc, [key, value]) => { acc.set(key, value); return acc; },
-    done: identity
+  return function (...varargs) {
+    if (zeroArity(varargs)) return new Map();
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, [key, value]] = varargs;
+    acc.set(key, value);
+    return acc;
   };
 }
 
 function assoc() {
-  return {
-    init: () => ({}),
-    step: (acc, [key, value]) => { acc[key] = value; return acc; },
-    done: identity
+  return function (...varargs) {
+    if (zeroArity(varargs)) return {};
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, [key, value]] = varargs;
+    acc[key] = value;
+    return acc;
   };
 }
 
 function stringOf(sep = '') {
-  return {
-    init: () => '',
-    step: (acc, x) => `${acc}${sep}${x}`,
-    done: identity
+  return function (...varargs) {
+    if (zeroArity(varargs)) return '';
+    if (oneArity(varargs)) return varargs[0];
+    const [acc, x] = varargs;
+    return `${acc}${sep}${x}`;
   };
 }
 
