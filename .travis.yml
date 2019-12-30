@@ -1,0 +1,12 @@
+dist: xenial
+sudo: false
+language: node_js
+node_js:
+  - node
+install:
+  - npm install
+script:
+  - npx standard
+  - npm run test
+notifications:
+  - email: false
