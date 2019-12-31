@@ -39,9 +39,17 @@ function takeWhile(pred) {
   }
 }
 
+function drop(n) {
+  return function (reducer) {
+    const step = (acc, x) => --n < 0 ? reducer(acc, x) : acc;
+    return shapeFn(reducer, step)
+  }
+}
+
 module.exports = {
   map,
   filter,
   take,
   takeWhile,
+  drop,
 }
