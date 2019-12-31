@@ -2,13 +2,14 @@
 
 const { isReduced } = require('./tools.js')
 
-function transduce (xform, reducer, iterable) {
+
+function transduce (xform, reducer, coll) {
   const transformation = xform(reducer)
-  return reduce(transformation, iterable, transformation())
+  return reduce(transformation, coll, transformation())
 }
 
-function reduce (step, iterable, acc) {
-  for (const item of iterable) {
+function reduce (step, coll, acc) {
+  for (const item of coll) {
     acc = step(acc, item)
     if (isReduced(acc)) { return acc.value() }
   }
