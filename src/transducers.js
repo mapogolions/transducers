@@ -2,41 +2,46 @@
 
 const { zeroArity, oneArity, ensureReduced } = require('./tools.js')
 
+function shapeFn(reducer, step) {
+  return function (...varargs) {
+    if (zeroArity(varargs)) return reducer()
+    if (oneArity(varargs)) return reducer(varargs[0])
+    const [acc, x] = varargs
+    return step(acc, x)
+  }
+}
+
 function map (fn) {
   return function (reducer) {
-    return function (...varargs) {
-      if (zeroArity(varargs)) return reducer()
-      if (oneArity(varargs)) return reducer(varargs[0])
-      const [acc, x] = varargs
-      return reducer(acc, fn(x))
-    }
+    const step = (acc, x) => reducer(acc, fn(x))
+    return shapeFn(reducer, step);
   }
 }
 
 function filter (pred) {
   return function (reducer) {
-    return function (...varargs) {
-      if (zeroArity(varargs)) return reducer()
-      if (oneArity(varargs)) return reducer(varargs[0])
-      const [acc, x] = varargs
-      return pred(x) ? reducer(acc, x) : acc
-    }
+    const step = (acc, x) => pred(x) ? reducer(acc, x) : acc
+    return shapeFn(reducer, step)
   }
 }
 
 function take (n) {
   return function (reducer) {
-    return function (...varargs) {
-      if (zeroArity(varargs)) return reducer()
-      if (oneArity(varargs)) return reducer(varargs[0])
-      const [acc, x] = varargs
-      return --n < 0 ? ensureReduced(acc) : reducer(acc, x)
-    }
+    const step = (acc, x) => --n < 0 ? ensureReduced(acc) : reducer(acc, x)
+    return shapeFn(reducer, step)
+  }
+}
+
+function takeWhile(pred) {
+  return function (reducer) {
+    const step = (acc, x) => pred(x) ? reducer(acc, x) : ensureReduced(acc)
+    return shapeFn(reducer, step)
   }
 }
 
 module.exports = {
   map,
   filter,
-  take
+  take,
+  takeWhile,
 }

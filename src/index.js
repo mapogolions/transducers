@@ -2,7 +2,6 @@
 
 const { isReduced } = require('./tools.js')
 
-
 function transduce (xform, reducer, coll) {
   const transformation = xform(reducer)
   return reduce(transformation, coll, transformation())
