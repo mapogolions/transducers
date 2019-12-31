@@ -46,10 +46,18 @@ function drop(n) {
   }
 }
 
+function dropWhile(pred) {
+  return function (reducer) {
+    const step = (acc, x) => pred(x) ? acc : reducer(acc, x)
+    return shapeFn(reducer, step)
+  }
+}
+
 module.exports = {
   map,
   filter,
   take,
   takeWhile,
   drop,
+  dropWhile,
 }
