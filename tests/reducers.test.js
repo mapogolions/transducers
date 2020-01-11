@@ -15,7 +15,7 @@ test('should prevent shared reference when initial value is a mutable reference 
     { reducer: mapOf(), expected: false },
     { reducer: setOf(), expected: false },
     { reducer: assoc(), expected: false },
-    { reducer: stringOf(), expected: true }, // immutable data
+    { reducer: stringOf(), expected: true } // immutable data
   ]
 
   testCases.forEach(({ reducer, expected }) => {
