@@ -6,6 +6,12 @@ const { transduce } = require('../src/index.js')
 const { map, filter, take, takeWhile } = require('../src/transducers.js')
 const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/reducers.js')
 
+test('Should apply passed initial value instead of reducers value by default', t => {
+  const coll = [1, 2, 3]
+  const actual = transduce(map(it => it), arrayOf(), coll, [-1, 0])
+  t.deepEqual(actual, [-1, 0, ...coll])
+})
+
 test('take while', t => {
   const testCases = [
     {
