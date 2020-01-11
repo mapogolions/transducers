@@ -2,9 +2,9 @@
 
 const { isReduced } = require('./tools.js')
 
-function transduce (xform, reducer, coll) {
+function transduce (xform, reducer, coll, initial = null) {
   const transformation = xform(reducer)
-  return reduce(transformation, coll, transformation())
+  return reduce(transformation, coll, initial || transformation())
 }
 
 function reduce (step, coll, acc) {
