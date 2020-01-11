@@ -9,6 +9,21 @@ const {
   stringOf
 } = require('../src/reducers.js')
 
+test('should prevent shared reference when initial value is a mutable reference type', t => {
+  const testCases = [
+    { reducer: arrayOf(), expected: false },
+    { reducer: mapOf(), expected: false },
+    { reducer: setOf(), expected: false },
+    { reducer: assoc(), expected: false },
+    { reducer: stringOf(), expected: true }, // immutable data
+  ]
+
+  testCases.forEach(({ reducer, expected }) => {
+    const actual = reducer() === reducer()
+    t.is(actual, expected)
+  })
+})
+
 test('stringOf reducer', t => {
   const reducer = stringOf('-')
   t.is(reducer(), '')
