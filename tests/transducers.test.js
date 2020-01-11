@@ -6,6 +6,30 @@ const { transduce } = require('../src/index.js')
 const { map, filter, take, takeWhile } = require('../src/transducers.js')
 const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/reducers.js')
 
+test('Should be compatible with traditional reducers', t => {
+  const testCases = [
+    {
+      message: 'Should return sum of elements',
+      coll: [1, 2, 3, 4],
+      reducer: (acc, x) => acc + x,
+      seed: 0,
+      expected: 10
+    },
+    {
+      message: 'Should return product of elements',
+      coll: [1, 2, 3, 4],
+      reducer: (acc, x) => acc * x,
+      seed: 1,
+      expected: 24
+    }
+  ]
+
+  testCases.forEach(({ coll, reducer, seed, expected, message }) => {
+    const actual = transduce(it => it, reducer, coll, seed)
+    t.is(actual, expected, message)
+  })
+})
+
 test('Should apply passed initial value instead of reducers value by default', t => {
   const coll = [1, 2, 3]
   const actual = transduce(map(it => it), arrayOf(), coll, [-1, 0])
