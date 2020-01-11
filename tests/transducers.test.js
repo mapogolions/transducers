@@ -2,7 +2,7 @@
 
 const test = require('ava')
 const { unreduced } = require('../src/tools.js')
-const { transduce } = require('../src/index.js')
+const { transduce, reduce } = require('../src/index.js')
 const { map, filter, take, takeWhile } = require('../src/transducers.js')
 const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/reducers.js')
 
@@ -12,20 +12,19 @@ test('Should be compatible with traditional reducers', t => {
       message: 'Should return sum of elements',
       coll: [1, 2, 3, 4],
       reducer: (acc, x) => acc + x,
-      seed: 0,
-      expected: 10
+      seed: 0
     },
     {
       message: 'Should return product of elements',
       coll: [1, 2, 3, 4],
       reducer: (acc, x) => acc * x,
-      seed: 1,
-      expected: 24
+      seed: 1
     }
   ]
 
-  testCases.forEach(({ coll, reducer, seed, expected, message }) => {
+  testCases.forEach(({ coll, reducer, seed, message }) => {
     const actual = transduce(it => it, reducer, coll, seed)
+    const expected = reduce(reducer, coll, seed)
     t.is(actual, expected, message)
   })
 })
