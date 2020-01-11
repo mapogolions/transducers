@@ -3,8 +3,42 @@
 const test = require('ava')
 const { unreduced } = require('../src/tools.js')
 const { transduce } = require('../src/index.js')
-const { map, filter, take } = require('../src/transducers.js')
+const { map, filter, take, takeWhile } = require('../src/transducers.js')
 const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/reducers.js')
+
+test('take while', t => {
+  const testCases = [
+    {
+      message: 'Should take 0 elements from array',
+      xform: takeWhile(it => it < 0),
+      reducer: arrayOf(),
+      coll: [2, 2, 3],
+      assert: t.deepEqual,
+      expected: []
+    },
+    {
+      message: 'Should copy all collection',
+      xform: takeWhile(_ => true),
+      reducer: stringOf(),
+      coll: 'epfl',
+      assert: t.is,
+      expected: 'epfl'
+    },
+    {
+      message: 'Should take elements until negative numbers appear',
+      xform: takeWhile(it => it > 0),
+      reducer: setOf(),
+      coll: new Set([1, 2, -1, 4]),
+      assert: t.deepEqual,
+      expected: new Set([1, 2])
+    }
+  ]
+
+  testCases.forEach(({ xform, reducer, coll, expected, assert, message }) => {
+    const actual = transduce(xform, reducer, coll)
+    assert(actual, expected, message)
+  })
+})
 
 test('take N elements transducer', t => {
   const testCases = [
