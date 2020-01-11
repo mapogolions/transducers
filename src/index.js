@@ -13,7 +13,7 @@ function transduce (xform, reducer, coll, initial = DefaultInitial) {
 function reduce (step, coll, acc) {
   for (const item of coll) {
     acc = step(acc, item)
-    if (isReduced(acc)) { return acc.value() }
+    if (isReduced(acc)) return acc.value()
   }
   return acc
 }
