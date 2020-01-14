@@ -10,12 +10,12 @@ function transduce (xform, reducer, coll, initial = DefaultInitial) {
   return reduce(transformation, coll, seed)
 }
 
-function reduce (step, coll, acc) {
+function reduce (reducer, coll, acc) {
   for (const item of coll) {
-    acc = step(acc, item)
-    if (isReduced(acc)) return acc.value()
+    acc = reducer(acc, item)
+    if (isReduced(acc)) return reducer(acc.value())
   }
-  return acc
+  return reducer(acc)
 }
 
 module.exports = {
