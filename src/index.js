@@ -4,8 +4,8 @@ const { isReduced } = require('./tools.js')
 
 const DefaultInitial = Symbol('Default initial')
 
-function transduce (xform, reducer, coll, initial = DefaultInitial) {
-  const transformation = xform(reducer)
+function transduce (transformer, reducer, coll, initial = DefaultInitial) {
+  const transformation = transformer(reducer)
   const seed = initial === DefaultInitial ? transformation() : initial
   return reduce(transformation, coll, seed)
 }
