@@ -6,7 +6,7 @@ const { transduce, reduce } = require('../src/index.js')
 const { map, filter, take, takeWhile } = require('../src/transducers.js')
 const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/primitives.js')
 
-test.skip('Should be compatible with traditional reducers', t => {
+test('Should be compatible with traditional reducers', t => {
   const testCases = [
     {
       message: 'Should return sum of elements',
@@ -29,47 +29,47 @@ test.skip('Should be compatible with traditional reducers', t => {
   })
 })
 
-test.skip('Should apply passed initial value instead of reducers value by default', t => {
+test('Should apply passed initial value instead of reducers value by default', t => {
   const coll = [1, 2, 3]
-  const actual = transduce(map(it => it), arrayOf(), coll, [-1, 0])
+  const actual = transduce(map(it => it), arrayOf, coll, [-1, 0])
   t.deepEqual(actual, [-1, 0, ...coll])
 })
 
-test.skip('take while', t => {
+test('take while', t => {
   const testCases = [
     {
       message: 'Should take 0 elements from array',
-      xform: takeWhile(it => it < 0),
-      reducer: arrayOf(),
+      transformer: takeWhile(it => it < 0),
+      reducer: arrayOf,
       coll: [2, 2, 3],
       assert: t.deepEqual,
       expected: []
     },
     {
       message: 'Should copy all collection',
-      xform: takeWhile(_ => true),
-      reducer: stringOf(),
+      transformer: takeWhile(_ => true),
+      reducer: stringOf,
       coll: 'epfl',
       assert: t.is,
       expected: 'epfl'
     },
     {
       message: 'Should take elements until negative numbers appear',
-      xform: takeWhile(it => it > 0),
-      reducer: setOf(),
+      transformer: takeWhile(it => it > 0),
+      reducer: setOf,
       coll: new Set([1, 2, -1, 4]),
       assert: t.deepEqual,
       expected: new Set([1, 2])
     }
   ]
 
-  testCases.forEach(({ xform, reducer, coll, expected, assert, message }) => {
-    const actual = transduce(xform, reducer, coll)
+  testCases.forEach(({ transformer, reducer, coll, expected, assert, message }) => {
+    const actual = transduce(transformer, reducer, coll)
     assert(actual, expected, message)
   })
 })
 
-test.skip('take N elements transducer', t => {
+test('take N elements transducer', t => {
   const testCases = [
     {
       message: 'Should take 2 elements from string',
@@ -89,7 +89,7 @@ test.skip('take N elements transducer', t => {
     },
     {
       message: 'Should take 0 elements when N is a negative number',
-      tranformer: take(-1),
+      transformer: take(-1),
       reducer: stringOf,
       coll: 'fake',
       expected: '',
