@@ -12,19 +12,20 @@ test('Should be compatible with traditional reducers', t => {
       message: 'Should return sum of elements',
       coll: [1, 2, 3, 4],
       reducer: (acc, x) => acc + x,
-      seed: 0
+      seed: 0,
+      expected: 10
     },
     {
       message: 'Should return product of elements',
       coll: [1, 2, 3, 4],
       reducer: (acc, x) => acc * x,
-      seed: 1
+      seed: 1,
+      expected: 24
     }
   ]
 
-  testCases.forEach(({ coll, reducer, seed, message }) => {
+  testCases.forEach(({ coll, reducer, seed, message, expected }) => {
     const actual = transduce(it => it, reducer, coll, seed)
-    const expected = reduce(reducer, coll, seed)
     t.is(actual, expected, message)
   })
 })
