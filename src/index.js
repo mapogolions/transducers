@@ -1,6 +1,7 @@
 'use strict'
 
 const { isReduced } = require('./tools.js')
+const { zeroArity, oneArity } = require('./tools.js')
 
 const DefaultInitial = Symbol('Default initial')
 
@@ -18,7 +19,18 @@ function reduce (reducer, coll, acc) {
   return reducer(acc)
 }
 
+function wrap (step) {
+  return function (...varargs) {
+    if (zeroArity(varargs)) throw Error()
+    if (oneArity(varargs)) return varargs[0]
+    const [acc, x] = varargs
+    return step(acc, x)
+  }
+}
+
+
 module.exports = {
+  wrap,
   reduce,
   transduce
 }

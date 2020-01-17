@@ -2,11 +2,11 @@
 
 const test = require('ava')
 const { unreduced } = require('../src/tools.js')
-const { transduce, reduce } = require('../src/index.js')
+const { transduce, wrap } = require('../src/index.js')
 const { map, filter, take, takeWhile } = require('../src/transducers.js')
 const { arrayOf, setOf, mapOf, stringOf, assoc } = require('../src/primitives.js')
 
-test('Should be compatible with traditional reducers', t => {
+test('Should be compatible with traditional reducers when used wrapper', t => {
   const testCases = [
     {
       message: 'Should return sum of elements',
@@ -25,7 +25,7 @@ test('Should be compatible with traditional reducers', t => {
   ]
 
   testCases.forEach(({ coll, reducer, seed, message, expected }) => {
-    const actual = transduce(it => it, reducer, coll, seed)
+    const actual = transduce(it => it, wrap(reducer), coll, seed)
     t.is(actual, expected, message)
   })
 })
