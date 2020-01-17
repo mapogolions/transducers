@@ -28,7 +28,6 @@ function wrap (step) {
   }
 }
 
-
 module.exports = {
   wrap,
   reduce,
