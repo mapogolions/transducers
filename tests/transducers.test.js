@@ -11,21 +11,21 @@ test('Should be compatible with traditional reducers when used wrapper', t => {
     {
       message: 'Should return sum of elements',
       coll: [1, 2, 3, 4],
-      reducer: (acc, x) => acc + x,
+      step: (acc, x) => acc + x,
       seed: 0,
       expected: 10
     },
     {
       message: 'Should return product of elements',
       coll: [1, 2, 3, 4],
-      reducer: (acc, x) => acc * x,
+      step: (acc, x) => acc * x,
       seed: 1,
       expected: 24
     }
   ]
 
-  testCases.forEach(({ coll, reducer, seed, message, expected }) => {
-    const actual = transduce(it => it, wrap(reducer), coll, seed)
+  testCases.forEach(({ coll, step, seed, message, expected }) => {
+    const actual = transduce(it => it, wrap(step), coll, seed)
     t.is(actual, expected, message)
   })
 })
