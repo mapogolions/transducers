@@ -1,7 +1,7 @@
 'use strict'
 
 const { isReduced } = require('./tools.js')
-const { zeroArity, oneArity } = require('./tools.js')
+const { nullary, unary } = require('./tools.js')
 
 const DefaultInitial = Symbol('Default initial')
 
@@ -21,8 +21,8 @@ function reduce (reducer, coll, acc) {
 
 function wrap (step) {
   return function (...varargs) {
-    if (zeroArity(varargs)) throw Error()
-    if (oneArity(varargs)) return varargs[0]
+    if (nullary(varargs)) throw Error()
+    if (unary(varargs)) return varargs[0]
     const [acc, x] = varargs
     return step(acc, x)
   }

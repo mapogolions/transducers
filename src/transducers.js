@@ -1,11 +1,11 @@
 'use strict'
 
-const { zeroArity, oneArity, ensureReduced } = require('./tools.js')
+const { nullary, unary, ensureReduced } = require('./tools.js')
 
 function shapeFn (reducer, step) {
   return function (...varargs) {
-    if (zeroArity(varargs)) return reducer()
-    if (oneArity(varargs)) return reducer(varargs[0])
+    if (nullary(varargs)) return reducer()
+    if (unary(varargs)) return reducer(varargs[0])
     const [acc, x] = varargs
     return step(acc, x)
   }

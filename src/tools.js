@@ -1,8 +1,8 @@
 'use strict'
 
 const arity = args => args.length
-const zeroArity = args => arity(args) === 0
-const oneArity = args => arity(args) === 1
+const nullary = args => arity(args) === 0
+const unary = args => arity(args) === 1
 
 const REDUCED = Symbol('reduced value')
 
@@ -26,8 +26,8 @@ function unreduced (obj) {
 
 module.exports = {
   arity,
-  zeroArity,
-  oneArity,
+  nullary,
+  unary,
   isReduced,
   ensureReduced,
   unreduced
