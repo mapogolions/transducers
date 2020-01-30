@@ -29,12 +29,12 @@ function wrap (step) {
   }
 }
 
-function into (initial, transfomer, coll) {
+function into (initial, transformer, coll) {
   if (Array.isArray(coll)) return transduce(transformer, arrayOf, coll, initial)
-  if (typeof coll === 'string') return transduce(transfomer, stringOf, coll, initial)
+  if (typeof coll === 'string') return transduce(transformer, stringOf, coll, initial)
   if (coll instanceof Map) return transduce(transformer, mapOf, coll, initial)
   if (coll instanceof Set) return transduce(transformer, setOf, coll, initial)
-  if (typeof coll === 'object') return transduce(transfomer, assoc, coll, initial)
+  if (typeof coll === 'object') return transduce(transformer, assoc, coll, initial)
   throw new Error(`Invalid typeof ${coll}`)
 }
 
